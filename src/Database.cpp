@@ -43,16 +43,28 @@ const int   OPEN_NOFOLLOW     = SQLITE_OPEN_NOFOLLOW;
 const int   OPEN_NOFOLLOW     = 0;
 #endif
 
-// Prepared statement flags (available since SQLite 3.20.0)
-#if SQLITE_VERSION_NUMBER >= 3020000
+// Prepared statement flags.  These were added over a long span of sqlite releases (PERSISTENT is
+// much older than DONT_LOG), so each is tested for individually: one version check covering all
+// of them fails to build against any sqlite new enough for the oldest flag but not the newest.
+// A flag missing from the sqlite we build against degrades to 0, i.e. passing no flag.
+#ifdef SQLITE_PREPARE_PERSISTENT
 const int   PREPARE_PERSISTENT = SQLITE_PREPARE_PERSISTENT;
-const int   PREPARE_NORMALIZE  = SQLITE_PREPARE_NORMALIZE;
-const int   PREPARE_NO_VTAB    = SQLITE_PREPARE_NO_VTAB;
-const int   PREPARE_DONT_LOG   = SQLITE_PREPARE_DONT_LOG;
 #else
 const int   PREPARE_PERSISTENT = 0;
+#endif
+#ifdef SQLITE_PREPARE_NORMALIZE
+const int   PREPARE_NORMALIZE  = SQLITE_PREPARE_NORMALIZE;
+#else
 const int   PREPARE_NORMALIZE  = 0;
+#endif
+#ifdef SQLITE_PREPARE_NO_VTAB
+const int   PREPARE_NO_VTAB    = SQLITE_PREPARE_NO_VTAB;
+#else
 const int   PREPARE_NO_VTAB    = 0;
+#endif
+#ifdef SQLITE_PREPARE_DONT_LOG
+const int   PREPARE_DONT_LOG   = SQLITE_PREPARE_DONT_LOG;
+#else
 const int   PREPARE_DONT_LOG   = 0;
 #endif
 
